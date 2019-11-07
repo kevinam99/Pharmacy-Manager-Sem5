@@ -20,7 +20,10 @@ import static javax.swing.JFrame.EXIT_ON_CLOSE;
  *
  * @author Local User
  */
+
+//public static String userInSesh;
 public class Login extends javax.swing.JFrame {
+    public static String userInSesh;
 
     /**
      * Creates new form Login
@@ -47,6 +50,7 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         login_button = new javax.swing.JButton();
+        signup_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,6 +65,13 @@ public class Login extends javax.swing.JFrame {
         login_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 login_buttonActionPerformed(evt);
+            }
+        });
+
+        signup_button.setText("Sign up");
+        signup_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signup_buttonActionPerformed(evt);
             }
         });
 
@@ -82,7 +93,9 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(157, 157, 157)
                 .addComponent(login_button)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(signup_button)
+                .addGap(32, 32, 32))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,7 +111,9 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(password_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(login_button)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(login_button)
+                    .addComponent(signup_button))
                 .addGap(35, 35, 35))
         );
 
@@ -113,14 +128,16 @@ public class Login extends javax.swing.JFrame {
           Class.forName("com.mysql.jdbc.Driver");
           Connection con;
           con=DriverManager.getConnection("jdbc:mysql://localhost:3306/example","root","");            
-          Statement stmt=con.createStatement();
-          ResultSet rs=stmt.executeQuery("select * from owner");
+          PreparedStatement stmt=con.prepareStatement("select password from owner where username = ?");
+          stmt.setString(1, uname_textfield.getText());
+          ResultSet rs=stmt.executeQuery();
           while(rs.next())
           {                 
-            if (uname_textfield.getText().equals(rs.getString(1))&& password_field.getText().equals(rs.getString(2)))
+            if (password_field.getText().equals(rs.getString(1)))
             {
               // this.setVisible(false);
               JOptionPane.showMessageDialog(null,"Welcome back "+ uname_textfield.getText() + "!");
+              userInSesh = uname_textfield.getText();
               this.dispose();
               MainMenu mn=new MainMenu();
               mn.setVisible(true);
@@ -139,6 +156,12 @@ public class Login extends javax.swing.JFrame {
       }  
     
     }//GEN-LAST:event_login_buttonActionPerformed
+
+    private void signup_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signup_buttonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        new Signup().setVisible(true);
+    }//GEN-LAST:event_signup_buttonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -183,6 +206,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton login_button;
     private javax.swing.JPasswordField password_field;
+    private javax.swing.JButton signup_button;
     private javax.swing.JTextField uname_textfield;
     // End of variables declaration//GEN-END:variables
 }
